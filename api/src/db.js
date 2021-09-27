@@ -3,6 +3,8 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
+const modelVideogame = require("./models/Videogame");
+const modelGenre = require("./models/Genre");
 
 const sequelize = new Sequelize(
   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/videogames`,
@@ -11,6 +13,8 @@ const sequelize = new Sequelize(
     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
   }
 );
+modelVideogame(sequelize);
+modelGenre(sequelize);
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
@@ -34,11 +38,10 @@ let capsEntries = entries.map((entry) => [
   entry[1],
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
-
+// Inicializamos los modelos
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 const { Videogame, Genre } = sequelize.models;
-
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
 Videogame.belongsToMany(Genre, { through: "videogame_genre" });

@@ -24,11 +24,19 @@ module.exports = (sequelize) => {
     },
     rating: {
       type: DataTypes.INTEGER,
-      defaultValue: 3,
+      validate: {
+        min: 1,
+        max: 5,
+      },
     },
     plataforms: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    urlImg: {
+      type: DataTypes.STRING,
+      defaultValue:
+        "https://m.media-amazon.com/images/I/51TSmpP19yL._AC_SX466_.jpg",
     },
   });
 };
