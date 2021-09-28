@@ -1,18 +1,24 @@
 const { Router } = require("express");
-const { Videogame } = require("../models/Videogame");
-const { Genre } = require("../models/Genre");
+const { Videogame, Genre } = require("../db");
 const axios = require("axios");
-const { API_KEY } = process.env;
+const { Op } = require("sequelize");
 const router = Router();
 const apikey = "b93baff03b7f4a6b91cbfad06b264509";
-const urlApi = `https://api.rawg.io/api/games?key=${apikey}`;
+const urlApi = `https://api.rawg.io/api/games?key=${apikey}&page=`;
 
-//https://desarrolloactivo.com/blog/axios/ metodo axios.all
 router.get("/", async (req, res) => {
+  let dataApi = []; //Un array para concatenar los games
   try {
-    let dataApi = await axios.get(urlApi);
-    for (let i = 1; i <= 5; i++) {
-      dataApi = dataApi.data.results.map((e) => {
+    //Traigo la data de la Api
+    dataApi = await axios.all([
+      axios.get(urlApi + "1"),
+      axios.get(urlApi + "2"),
+      axios.get(urlApi + "3"),
+      axios.get(urlApi + "4"),
+      axios.get(urlApi + "5"),
+    ]);
+    dataApi = dataApi.map((e) =>
+      e.data.results.map((e) => {
         let games = {
           id: e.id,
           urlImg: e.background_image,
@@ -23,13 +29,44 @@ router.get("/", async (req, res) => {
           released: e.released,
         };
         return games;
-      });
-    }
-
-    res.json(dataApi);
+      })
+    );
   } catch (e) {
-    console.log("Error: ", e);
+    console.log("Hubo un error con la Api: ", e);
+  }
+  dataApi[0] = dataApi[0].concat(
+    dataApi[1],
+    dataApi[2],
+    dataApi[3],
+    dataApi[4]
+  );
+  dataApi = dataApi[0];
+  res.json(dataApi);
+  try {
+    //Traigo la data de la db
+    dataGames = await Videogame.findAll({
+      include: Genre,
+    });
+  } catch (e) {
+    console.log("Hubo con error con la Base de Datos:", e);
   }
 });
 
+//POST de un videogame
+router.post("/videogame", async (req, res) => {
+  let { name, description, release_date, rating, genres, platforms } = req.body;
+  try {
+    let videogame = await Videogame.create({
+      name,
+      description,
+      release_date,
+      rating,
+      genres,
+      platforms,
+    });
+    res.send(videogame);
+  } catch (e) {
+    console.log(e);
+  }
+});
 module.exports = router;

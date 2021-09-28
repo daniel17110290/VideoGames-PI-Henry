@@ -1,6 +1,5 @@
 const { Router, response } = require("express");
-// const axios = require("axios");
-// const { API_KEY } = process.env;
+
 const videogames = require("./videogames");
 
 // Importar todos los routers;

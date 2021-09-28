@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
         max: 5,
       },
     },
-    plataforms: {
+    platforms: {
       type: DataTypes.STRING,
       allowNull: false,
     },
