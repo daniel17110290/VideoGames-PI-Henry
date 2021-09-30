@@ -13,11 +13,25 @@ router.get("/", async (req, res) => {
     //PARA TRAER LOS GAMES CON QUERY
     let dataGames = [];
     try {
+      //PARA TRAER DATA DE LA BDD
+      dataGames = await Videogame.findAll({
+        include: Genre,
+        attributes: ["id", "name", "urlImg"],
+        where: {
+          name: {
+            [Op.iLike]: `%${name}%`,
+          },
+        },
+      });
+    } catch (e) {
+      res.status(404).send("Error de la bases de datos: ", e);
+    }
+    try {
       //PARA TRAER DATA DE LA API
-      dataGames = await axios.get(
+      let games = await axios.get(
         `https://api.rawg.io/api/games?key=${apikey}&search=${name}`
       );
-      dataGames = dataGames.data.results.map((e) => {
+      games = games.data.results.map((e) => {
         let games = {
           id: e.id,
           urlImg: e.background_image,
@@ -29,38 +43,37 @@ router.get("/", async (req, res) => {
         };
         return games;
       });
+      dataGames = [...dataGames, games];
     } catch (e) {
       res.status(404).send("Error de la consulta a la Api", e);
     }
-    try {
-      //PARA TRAER DATA DE LA BDD
-      let games = await Videogame.findAll({
-        attributes: ["id", "name", "urlImg"],
-        where: {
-          name: {
-            [Op.iLike]: `%${name}%`,
-          },
-        },
-      });
-
-      dataGames = [...dataGames, games];
-    } catch (e) {
-      res.status(404).send("Error de la bases de datos: ", e);
-    }
-
-    res.send(dataGames);
+    dataGames = dataGames.flat().slice(0, 15);
+    res.json(dataGames);
   } else {
     //PARA TRAER TODOS LOS GAMES SIN EL QUERY
     let dataGames = []; //Un array para concatenar los games
     try {
       //Traigo la data de la Api
-      dataGames = await axios.all([
-        axios.get(urlApi + "1"),
-        axios.get(urlApi + "2"),
-        axios.get(urlApi + "3"),
-        axios.get(urlApi + "4"),
-        axios.get(urlApi + "5"),
-      ]);
+      // dataGames = await axios.all([
+      //   axios.get(urlApi + "1"),
+      //   axios.get(urlApi + "2"),
+      //   axios.get(urlApi + "3"),
+      //   axios.get(urlApi + "4"),
+      //   axios.get(urlApi + "5"),
+      // ]);
+      // console.log(dataGames);
+      // return res.json(dataGames.data);
+      let dataAux = await axios.get(
+        `https://api.rawg.io/api/games?key=${apikey}`
+      );
+      dataGames.push(dataAux);
+      let next = dataAux.data.next;
+      for (let i = 2; i <= 5; i++) {
+        let aux = await axios.get(next);
+        next = aux.data.next;
+        dataGames.push(aux);
+      }
+
       dataGames = dataGames.map((e) =>
         e.data.results.map((e) => {
           let games = {
@@ -88,12 +101,14 @@ router.get("/", async (req, res) => {
     try {
       //Traigo la data de la db
       let dataBdd = await Videogame.findAll({
+        include: Genre,
         attributes: ["id", "name", "urlImg"],
       });
       dataGames = [...dataGames, dataBdd];
     } catch (e) {
       res.send("Hubo con error con la Base de Datos:", e);
     }
+    dataGames = dataGames.flat();
     res.send(dataGames);
   }
 });
@@ -107,9 +122,9 @@ router.post("/videogame", async (req, res) => {
       description,
       release_date,
       rating,
-      genres,
       platforms,
     });
+    await videogame.addGenres(genres);
     res.json(videogame);
   } catch (e) {
     console.log("Error del post", e);
@@ -118,14 +133,22 @@ router.post("/videogame", async (req, res) => {
 
 //GET de un videogame con id por params
 router.get("/videogame/:idVideogame", async (req, res) => {
-  //TRAER DETALLES DE BDD  NO FUNCA
+  //TRAER DETALLES DE BDD
   let { idVideogame } = req.params;
   if (isNaN(idVideogame)) {
     try {
-      let videogame = await Videogame.findByPk(idVideogame, {
-        include: Genre,
+      const videogame = await Videogame.findByPk(idVideogame, {
+        include: [
+          {
+            model: Genre,
+            attributes: ["name"],
+            through: {
+              attributes: [],
+            },
+          },
+        ],
       });
-      res.json(videogame);
+      res.send(videogame);
     } catch (e) {
       res.status(404).send("Error de la Base de Datos: ", e);
     }

@@ -10,10 +10,6 @@ module.exports = (sequelize) => {
       allowNull: false,
       primaryKey: true,
     },
-    fromDB: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: 1,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -41,6 +37,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       defaultValue:
         "https://m.media-amazon.com/images/I/51TSmpP19yL._AC_SX466_.jpg",
+    },
+    fromDB: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   });
 };

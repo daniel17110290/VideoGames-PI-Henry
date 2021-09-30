@@ -19,13 +19,34 @@
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const server = require("./src/app.js");
 const { conn } = require("./src/db.js");
-const { Genre } = require("./src/models/Genre");
+const { Genre } = require("./src/db");
 const axios = require("axios");
-const { API_KEY } = process.env;
 
 // Syncing all the models at once.
-conn.sync({ force: false }).then(() => {
-  server.listen(3001, () => {
-    console.log("%s listening at 3001"); // eslint-disable-line no-console
+conn
+  .sync({ force: false })
+  .then(() => {
+    server.listen(3001, () => {
+      console.log("%s listening at 3001"); // eslint-disable-line no-console
+    });
+  })
+  .then(async () => {
+    try {
+      let verif = await Genre.findAll();
+      if (!verif.length) {
+        try {
+          let dataGenre = await axios.get(
+            "https://api.rawg.io/api/genres?key=b93baff03b7f4a6b91cbfad06b264509"
+          );
+          dataGenre = dataGenre.data.results;
+          await Genre.bulkCreate(dataGenre, {
+            name: dataGenre.name,
+          });
+        } catch (e) {
+          console.log("Error con los GENEROS:", e);
+        }
+      }
+    } catch (e) {
+      console.log("Error en la base de datos:", e);
+    }
   });
-});

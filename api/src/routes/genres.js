@@ -1,12 +1,15 @@
 const { Router } = require("express");
-// const { Videogame } = require("../models/Videogame");
-// const { Genre } = require("../models/Genre");
-const { API_KEY } = process.env;
-let axios = require("axios");
+const { Genre } = require("../db");
+
 const router = Router();
 
-router.get("/genres", async (req, res) => {
-  res.json("soy genres");
+router.get("/", async (req, res) => {
+  try {
+    let genres = await Genre.findAll();
+    res.json(genres);
+  } catch (e) {
+    console.log("Error de la base de Datos: ", e);
+  }
 });
 
 module.exports = router;
