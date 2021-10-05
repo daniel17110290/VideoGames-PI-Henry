@@ -4,7 +4,6 @@ const axios = require("axios");
 const { Op } = require("sequelize");
 const router = Router();
 const apikey = "b93baff03b7f4a6b91cbfad06b264509";
-const urlApi = `https://api.rawg.io/api/games?key=${apikey}&page=`;
 
 // GET de los videogames por query, sino muestra todos
 router.get("/", async (req, res) => {
@@ -15,13 +14,29 @@ router.get("/", async (req, res) => {
     try {
       //PARA TRAER DATA DE LA BDD
       dataGames = await Videogame.findAll({
-        include: Genre,
+        include: [
+          {
+            model: Genre,
+            attributes: ["name"],
+            through: {
+              attributes: [],
+            },
+          },
+        ],
         attributes: ["id", "name", "urlImg"],
         where: {
           name: {
             [Op.iLike]: `%${name}%`,
           },
         },
+      });
+      dataGames = dataGames.map((e) => {
+        return (gameBdd = {
+          id: e.id,
+          name: e.name,
+          urlImg: e.urlImg,
+          genres: e.genres.map((e) => e.name),
+        });
       });
     } catch (e) {
       res.status(404).send("Error de la bases de datos: ", e);
@@ -54,15 +69,7 @@ router.get("/", async (req, res) => {
     let dataGames = []; //Un array para concatenar los games
     try {
       //Traigo la data de la Api
-      // dataGames = await axios.all([
-      //   axios.get(urlApi + "1"),
-      //   axios.get(urlApi + "2"),
-      //   axios.get(urlApi + "3"),
-      //   axios.get(urlApi + "4"),
-      //   axios.get(urlApi + "5"),
-      // ]);
-      // console.log(dataGames);
-      // return res.json(dataGames.data);
+
       let dataAux = await axios.get(
         `https://api.rawg.io/api/games?key=${apikey}`
       );
@@ -91,25 +98,36 @@ router.get("/", async (req, res) => {
     } catch (e) {
       res.status(404).send("Hubo un error con la Api: ", e);
     }
-    dataGames[0] = dataGames[0].concat(
-      dataGames[1],
-      dataGames[2],
-      dataGames[3],
-      dataGames[4]
-    );
-    dataGames = dataGames[0];
+
     try {
       //Traigo la data de la db
       let dataBdd = await Videogame.findAll({
-        include: Genre,
+        include: [
+          {
+            model: Genre,
+            attributes: ["name"],
+            through: {
+              attributes: [],
+            },
+          },
+        ],
         attributes: ["id", "name", "urlImg"],
       });
+      dataBdd = dataBdd.map((e) => {
+        return (gameBdd = {
+          id: e.id,
+          name: e.name,
+          urlImg: e.urlImg,
+          genres: e.genres.map((e) => e.name),
+        });
+      });
+
       dataGames = [...dataGames, dataBdd];
     } catch (e) {
       res.send("Hubo con error con la Base de Datos:", e);
     }
     dataGames = dataGames.flat();
-    res.send(dataGames);
+    res.json(dataGames);
   }
 });
 
@@ -137,7 +155,7 @@ router.get("/videogame/:idVideogame", async (req, res) => {
   let { idVideogame } = req.params;
   if (isNaN(idVideogame)) {
     try {
-      const videogame = await Videogame.findByPk(idVideogame, {
+      let videogame = await Videogame.findByPk(idVideogame, {
         include: [
           {
             model: Genre,
@@ -148,7 +166,20 @@ router.get("/videogame/:idVideogame", async (req, res) => {
           },
         ],
       });
-      res.send(videogame);
+      //NO ENCONTRE OTRA FORMA DE MAPEAR
+      generos = videogame.genres.map((e) => {
+        return e.name;
+      });
+      let videogameNew = {
+        name: videogame.name,
+        description: videogame.description,
+        rating: videogame.rating,
+        genres: generos,
+        platforms: videogame.platforms,
+        urlImg: videogame.urlImg,
+        released: videogame.release_date,
+      };
+      res.json(videogameNew);
     } catch (e) {
       res.status(404).send("Error de la Base de Datos: ", e);
     }
@@ -167,6 +198,7 @@ router.get("/videogame/:idVideogame", async (req, res) => {
         rating: videogame.rating,
         platforms: videogame.platforms.map((e) => e.platform.name),
         released: videogame.released,
+        description: videogame.description_raw,
       };
       res.json(game);
     } catch (e) {
