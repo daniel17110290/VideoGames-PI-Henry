@@ -1,15 +1,35 @@
 import SearchBar from "./SearchBar";
 import { Link } from "react-router-dom";
-import { createDispatchHook, useDispatch, useSelector } from "react-redux";
-import { ordernarVideogames } from "../../actions";
-import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  ordenarVideogamesAlfa,
+  ordenarVideogamesRating,
+  resetear,
+  filtrarGenero,
+  filtrarOrigen,
+} from "../../actions";
 export default function Nav() {
-  let videoGames = useSelector((state) => state.videoGames);
-
   let dispatch = useDispatch();
-  function order(e) {
-    e.preventDefault();
-    dispatch(ordernarVideogames(e.target.value, videoGames));
+
+  function reiniciar() {
+    dispatch(resetear());
+  }
+
+  function filtrarPorGenero(genero) {
+    reiniciar();
+    dispatch(filtrarGenero(genero));
+  }
+  function filtrarPorOrigen(origen) {
+    reiniciar();
+    dispatch(filtrarOrigen(origen));
+  }
+  function ordenarAlfa(tipo) {
+    reiniciar();
+    dispatch(ordenarVideogamesAlfa(tipo));
+  }
+  function ordenarRating(tipo) {
+    reiniciar();
+    dispatch(ordenarVideogamesRating(tipo));
   }
   return (
     <div>
@@ -22,42 +42,41 @@ export default function Nav() {
 
       <label>Alfabetico</label>
       <div>
-        <input
-          type="radio"
-          name="ordenamiento"
-          id="ascendente"
-          value="ascendente"
-          onClick={(e) =>
-            dispatch(ordernarVideogames(e.target.value, videoGames))
-          }
-        />
-        <label for="ascendente">Ascendente</label>
-      </div>
-      <div>
-        <input
-          type="radio"
-          name="ordenamiento"
-          id="descendente"
-          value="descendente"
-          onClick={(e) =>
-            dispatch(ordernarVideogames(e.target.value, videoGames))
-          }
-        />
-        <label for="descendente">Descendente</label>
+        <select
+          name="ordenamiento alfabetico"
+          onClick={(e) => ordenarAlfa(e.target.value)}
+        >
+          <option value="todos">Todos</option>
+          <option value="ascendente">Ascendente</option>
+          <option value="descendente">Descendente</option>
+        </select>
       </div>
 
       <label>Rating</label>
-      <select name="rating">
-        <option value="">Ordenar</option>
-        <option value="ascendente">1-5</option>
-        <option value="descendente">5-1</option>
-      </select>
-
+      <div>
+        <select
+          name="ordenamiento rating"
+          onClick={(e) => ordenarRating(e.target.value)}
+        >
+          <option value="todos">Todos</option>
+          <option value="ascendente">Ascendente</option>
+          <option value="descendente">Descendente</option>
+        </select>
+      </div>
       <div>
         <p>Filtrado</p>
 
         <label>Género</label>
-        <select name="genero">
+        <select
+          name="genero"
+          onClick={(e) => {
+            if (e.target.value === "todos") {
+              reiniciar();
+            } else {
+              filtrarPorGenero(e.target.value);
+            }
+          }}
+        >
           <option value="todos">Todos</option>
           <option value="Action">Acción</option>
           <option value="Indie">Indie</option>
@@ -80,7 +99,16 @@ export default function Nav() {
           <option value="Card">Tarjetas</option>
         </select>
         <label>Orígen</label>
-        <select name="origen">
+        <select
+          name="origen"
+          onClick={(e) => {
+            if (e.target.value === "todos") {
+              reiniciar();
+            } else {
+              filtrarPorOrigen(e.target.value);
+            }
+          }}
+        >
           <option value="todos">Todos</option>
           <option value="existente">Existente</option>
           <option value="creado">Creado</option>
@@ -88,6 +116,7 @@ export default function Nav() {
       </div>
 
       <SearchBar />
+      <button onClick={reiniciar}>RESET</button>
     </div>
   );
 }

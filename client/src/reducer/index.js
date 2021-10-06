@@ -1,40 +1,22 @@
 import {
   GET_VIDEOGAMES,
-  ORDENAR_VIDEOGAMES,
+  ORDENAR_VIDEOGAMES_ALFA,
+  ORDENAR_VIDEOGAMES_RATING,
+  RESET,
   FILTRAR_GENEROS,
-  FILTRAR_CREADOS,
-  FILTRAR_EXISTENTES,
+  FILTRAR_ORIGEN,
+  BUSCAR_GAME,
 } from "../constantes/actions";
-
+import {
+  ordenarAlfa,
+  ordenarRating,
+  filtrarGenero,
+  filtrarOrigen,
+} from "../utils/index";
 let intialStore = {
   videoGames: [],
+  reset: [],
 };
-
-function ordenar(type, list) {
-  list = JSON.parse(JSON.stringify(list));
-  if (type === "ascendente") {
-    list.sort((a, b) => {
-      if (a.name > b.name) {
-        return 1;
-      } else if (a.name < b.name) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-  } else if (type === "descendente") {
-    list.sort((a, b) => {
-      if (a.name < b.name) {
-        return 1;
-      } else if (a.name > b.name) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-  }
-  return list;
-}
 
 export default function rootReducer(state = intialStore, action) {
   switch (action.type) {
@@ -42,13 +24,38 @@ export default function rootReducer(state = intialStore, action) {
       return {
         ...state,
         videoGames: action.payload,
+        reset: action.payload,
       };
-    case ORDENAR_VIDEOGAMES:
+    case ORDENAR_VIDEOGAMES_ALFA:
       return {
         ...state,
-        videoGames: ordenar(action.payload, state.videoGames),
+        videoGames: ordenarAlfa(action.payload, state.videoGames),
       };
-
+    case ORDENAR_VIDEOGAMES_RATING:
+      return {
+        ...state,
+        videoGames: ordenarRating(action.payload, state.videoGames),
+      };
+    case RESET:
+      return {
+        ...state,
+        videoGames: state.reset,
+      };
+    case FILTRAR_GENEROS:
+      return {
+        ...state,
+        videoGames: filtrarGenero(action.payload, state.videoGames),
+      };
+    case FILTRAR_ORIGEN:
+      return {
+        ...state,
+        videoGames: filtrarOrigen(action.payload, state.videoGames),
+      };
+    case BUSCAR_GAME:
+      return {
+        ...state,
+        videoGames: action.payload,
+      };
     default:
       return state;
   }

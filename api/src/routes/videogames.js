@@ -111,7 +111,7 @@ router.get("/", async (req, res) => {
             },
           },
         ],
-        attributes: ["id", "name", "urlImg"],
+        attributes: ["id", "name", "urlImg", "fromDB"],
       });
       dataBdd = dataBdd.map((e) => {
         return (gameBdd = {
@@ -119,6 +119,7 @@ router.get("/", async (req, res) => {
           name: e.name,
           urlImg: e.urlImg,
           genres: e.genres.map((e) => e.name),
+          fromDB: e.fromDB,
         });
       });
 
