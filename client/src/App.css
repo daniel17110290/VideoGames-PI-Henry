@@ -1,5 +1,11 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  background-image: url("https://i.pinimg.com/originals/cd/0e/a1/cd0ea15a2c5c094862c6e1b23b259f57.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .App-logo {

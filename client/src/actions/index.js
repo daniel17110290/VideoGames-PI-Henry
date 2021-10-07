@@ -7,17 +7,26 @@ import {
   FILTRAR_GENEROS,
   FILTRAR_ORIGEN,
   BUSCAR_GAME,
+  LOADING,
 } from "../constantes/actions";
 import { VIDEOGAMES_URL } from "../constantesUrl";
 
 export function getVideogames() {
   return function (dispatch) {
-    return axios.get(VIDEOGAMES_URL).then((videogames) => {
-      dispatch({
-        type: GET_VIDEOGAMES,
-        payload: videogames.data,
+    return axios
+      .get(VIDEOGAMES_URL)
+      .then((videogames) => {
+        dispatch({
+          type: GET_VIDEOGAMES,
+          payload: videogames.data,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: GET_VIDEOGAMES,
+          error: error,
+        });
       });
-    });
   };
 }
 
@@ -57,11 +66,26 @@ export function filtrarOrigen(payload) {
 
 export function buscarGame(name) {
   return function (dispatch) {
-    return axios.get(`${VIDEOGAMES_URL}?name=${name}`).then((videogames) => {
-      dispatch({
-        type: BUSCAR_GAME,
-        payload: videogames.data,
+    return axios
+      .get(`${VIDEOGAMES_URL}?name=${name}`)
+      .then((videogames) => {
+        dispatch({
+          type: BUSCAR_GAME,
+          payload: videogames.data,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: BUSCAR_GAME,
+          error: error,
+        });
       });
-    });
+  };
+}
+
+export function loading() {
+  return {
+    type: LOADING,
+    loading: false,
   };
 }

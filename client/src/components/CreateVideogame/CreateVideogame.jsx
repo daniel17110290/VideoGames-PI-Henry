@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useDispatch } from "react-redux";
+import { loading } from "../../actions";
 export default function CreateVideogame() {
   let [videogame, setVideogame] = useState({
     name: "",
@@ -12,8 +13,8 @@ export default function CreateVideogame() {
     platforms: [],
   });
   let [genres, setGenres] = useState([]);
-
-  let [platforms, setPlatforms] = useState([]);
+  let dispatch = useDispatch();
+  let [create, setCreate] = useState(false);
 
   function addPlatform(e) {
     setVideogame({
@@ -47,9 +48,10 @@ export default function CreateVideogame() {
   async function handleSubmit(e) {
     e.preventDefault();
     await axios.post("http://localhost:3001/videogames/videogame/", videogame);
+    setCreate(true);
     alert("Juego Creado!!!");
+    dispatch(loading());
   }
-  console.log(videogame);
   return (
     <div>
       <div>
@@ -58,48 +60,54 @@ export default function CreateVideogame() {
         </Link>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <p>
-          <label>Name: </label>
+          <label htmlFor="name">Name: </label>
           <input
             type="text"
             name="name"
+            id="name"
             value={videogame.name}
             placeholder="Name..."
-            onChange={onInputChange}
+            onChange={(e) => onInputChange(e)}
+            required
           />
         </p>
         <p>
-          <label>Description: </label>
+          <label htmlFor="description">Description: </label>
           <textarea
             name="description"
+            id="description"
             placeholder="Description..."
-            onChange={onInputChange}
+            onChange={(e) => onInputChange(e)}
+            required
           ></textarea>
         </p>
         <p>
-          <label>Release Date: </label>
+          <label htmlFor="release_date">Release Date: </label>
           <input
             type="date"
             name="release_date"
+            id="release_date"
             value={videogame.release_date}
-            onChange={onInputChange}
+            onChange={(e) => onInputChange(e)}
           />
         </p>
         <p>
-          <label>Rating: </label>
+          <label htmlFor="rating">Rating: </label>
           <input
             type="number"
             name="rating"
+            id="rating"
             value={videogame.rating}
             min="0"
             max="5"
-            onChange={onInputChange}
+            onChange={(e) => onInputChange(e)}
           />
         </p>
         <p>
-          <label htmlFor="">Genres:</label>
-          <select name="genres" multiple>
+          <label htmlFor="genres">Genres:</label>
+          <select name="genres" id="genres" multiple>
             {genres.map((genre) => {
               return (
                 <option
@@ -113,8 +121,8 @@ export default function CreateVideogame() {
           </select>
         </p>
         <p>
-          <label htmlFor="">Platforms:</label>
-          <select name="platforms" multiple>
+          <label htmlFor="platforms">Platforms:</label>
+          <select name="platforms" id="platforms" multiple required>
             <option value="PC" onClick={(e) => addPlatform(e)}>
               PC
             </option>
@@ -141,7 +149,9 @@ export default function CreateVideogame() {
             </option>
           </select>
         </p>
+
         <input type="submit" value="Crear" />
+        {create && <Redirect to="/home" />}
       </form>
     </div>
   );

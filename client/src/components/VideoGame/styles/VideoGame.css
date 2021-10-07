@@ -1,0 +1,41 @@
+.container-main {
+  background-color: #261c2c;
+  color: #6e85b2;
+  border-radius: 10%;
+  width: 25%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  margin: 30px;
+  transition: width 0.1s, height 0.1s, transform 0.1s;
+}
+
+.container-main:hover {
+  background-color: #6e85b2;
+  color: #261c2c;
+  transform: scale(1.1);
+}
+
+.container-info {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.container-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+img {
+  width: 100%;
+  border-radius: 10%;
+}
+
+.container-genres {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

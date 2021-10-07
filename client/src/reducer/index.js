@@ -6,6 +6,7 @@ import {
   FILTRAR_GENEROS,
   FILTRAR_ORIGEN,
   BUSCAR_GAME,
+  LOADING,
 } from "../constantes/actions";
 import {
   ordenarAlfa,
@@ -16,6 +17,8 @@ import {
 let intialStore = {
   videoGames: [],
   reset: [],
+  loading: false,
+  error: "",
 };
 
 export default function rootReducer(state = intialStore, action) {
@@ -25,6 +28,8 @@ export default function rootReducer(state = intialStore, action) {
         ...state,
         videoGames: action.payload,
         reset: action.payload,
+        loading: true,
+        error: action.error,
       };
     case ORDENAR_VIDEOGAMES_ALFA:
       return {
@@ -56,6 +61,12 @@ export default function rootReducer(state = intialStore, action) {
         ...state,
         videoGames: action.payload,
       };
+    case LOADING:
+      return {
+        ...state,
+        loading: action.loading,
+      };
+
     default:
       return state;
   }
