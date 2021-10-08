@@ -3,7 +3,7 @@ export default function Inicio() {
   return (
     <div>
       <Link to="/home">
-        <button>HOME</button>
+        <button className="button">HOME</button>
       </Link>
     </div>
   );
