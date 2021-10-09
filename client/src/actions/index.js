@@ -8,6 +8,8 @@ import {
   FILTRAR_ORIGEN,
   BUSCAR_GAME,
   LOADING,
+  NEXT_PAGE,
+  PREV_PAGE,
 } from "../constantes/actions";
 import { VIDEOGAMES_URL } from "../constantesUrl";
 
@@ -87,5 +89,17 @@ export function loading() {
   return {
     type: LOADING,
     loading: false,
+  };
+}
+
+export function nextPage() {
+  return {
+    type: NEXT_PAGE,
+  };
+}
+
+export function prevPage() {
+  return {
+    type: PREV_PAGE,
   };
 }

@@ -102,7 +102,7 @@ export default function CreateVideogame() {
             className="input"
           />
 
-          <select name="genres" id="genres" className="select">
+          <select name="genres" id="genres" className="select" multiple>
             {genres.map((genre) => {
               return (
                 <option
@@ -115,7 +115,13 @@ export default function CreateVideogame() {
             })}
           </select>
 
-          <select name="platforms" id="platforms" required className="select">
+          <select
+            name="platforms"
+            id="platforms"
+            required
+            className="select"
+            multiple
+          >
             <option value="PC" onClick={(e) => addPlatform(e)}>
               PC
             </option>
