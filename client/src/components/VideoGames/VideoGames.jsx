@@ -34,10 +34,6 @@ export default function VideoGames() {
 
   return (
     <div className="main">
-      <div className="container-loader">{!loading && <Loader />}</div>
-      <div className="container-error">
-        {error && <Message msg={`${error}`} bgColor="#dc3545" />}
-      </div>
       <div>
         <button className="button" onClick={paginaAnt}>
           Prev
@@ -45,6 +41,10 @@ export default function VideoGames() {
         <button className="button" onClick={paginaSig}>
           Next
         </button>
+      </div>
+      <div className="container-loader">{!loading && <Loader />}</div>
+      <div className="container-error">
+        {error && <Message msg={`${error}`} bgColor="#dc3545" />}
       </div>
       <div className="container-videoGames">
         {paginaVideogames() &&
