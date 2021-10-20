@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <Route exact path="/">
-        <Inicio className="inicio" />
+        <Inicio />
       </Route>
       <Route exact path="/home">
         <Nav />

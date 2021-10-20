@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
     rating: {
       type: DataTypes.INTEGER,
       validate: {
-        min: 1,
+        min: 0,
         max: 5,
       },
     },
@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
     urlImg: {
       type: DataTypes.STRING,
       defaultValue:
-        "https://m.media-amazon.com/images/I/51TSmpP19yL._AC_SX466_.jpg",
+        "https://media.giphy.com/media/vCUjNFrZOW7kjl9fEO/giphy.gif",
     },
     fromDB: {
       type: DataTypes.BOOLEAN,

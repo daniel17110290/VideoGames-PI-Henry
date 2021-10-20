@@ -43,10 +43,10 @@ conn
             name: dataGenre.name,
           });
         } catch (e) {
-          console.log("Error con los GENEROS:", e);
+          res.status(404).send("Error con los GENEROS:", e);
         }
       }
     } catch (e) {
-      console.log("Error en la base de datos:", e);
+      res.status(404).send("Error en la base de datos:", e);
     }
   });

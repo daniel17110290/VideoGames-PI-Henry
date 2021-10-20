@@ -16,6 +16,7 @@ import {
   filtrarGenero,
   filtrarOrigen,
 } from "../utils/index";
+//STATE GLOBAL
 let intialStore = {
   videoGames: [],
   reset: [],

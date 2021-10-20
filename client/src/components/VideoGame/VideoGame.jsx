@@ -1,7 +1,7 @@
 import "./styles/VideoGame.css";
 
 import { Link } from "react-router-dom";
-export default function VideoGame({ name, urlImg, genres, id }) {
+export default function VideoGame({ name, urlImg, genres, id, rating }) {
   return (
     <div className="container-main">
       <div className="container-info">
@@ -14,6 +14,9 @@ export default function VideoGame({ name, urlImg, genres, id }) {
             {genres.map((genre) => {
               return <p>{genre}</p>;
             })}
+          </div>
+          <div>
+            <h4>Rating: {rating}</h4>
           </div>
         </div>
       </div>

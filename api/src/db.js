@@ -35,10 +35,10 @@ let capsEntries = entries.map((entry) => [
   entry[0][0].toUpperCase() + entry[0].slice(1),
   entry[1],
 ]);
+// Inicializamos los modelos
 modelVideogame(sequelize);
 modelGenre(sequelize);
 sequelize.models = Object.fromEntries(capsEntries);
-// Inicializamos los modelos
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 const { Videogame, Genre } = sequelize.models;

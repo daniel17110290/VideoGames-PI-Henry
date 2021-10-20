@@ -30,7 +30,7 @@ export function ordenarRating(type, list) {
     list.sort((a, b) => {
       if (a.rating > b.rating) {
         return 1;
-      } else if (a.name < b.name) {
+      } else if (a.rating < b.rating) {
         return -1;
       } else {
         return 0;
@@ -40,7 +40,7 @@ export function ordenarRating(type, list) {
     list.sort((a, b) => {
       if (a.rating < b.rating) {
         return 1;
-      } else if (a.name > b.name) {
+      } else if (a.rating > b.rating) {
         return -1;
       } else {
         return 0;

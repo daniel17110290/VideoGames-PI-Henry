@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
   let { name } = req.query;
   if (name) {
     //PARA TRAER LOS GAMES CON QUERY
-    let dataGames = [];
+    let dataGames = []; //Un array para concatenar los games
     try {
       //PARA TRAER DATA DE LA BDD
       dataGames = await Videogame.findAll({
@@ -62,8 +62,12 @@ router.get("/", async (req, res) => {
     } catch (e) {
       res.status(404).send("Error de la consulta a la Api", e);
     }
-    dataGames = dataGames.flat().slice(0, 15);
-    res.json(dataGames);
+    if (dataGames) {
+      dataGames = dataGames.flat().slice(0, 15);
+      res.json(dataGames);
+    } else {
+      res.status(200).send("No existen juegos con ese nombre");
+    }
   } else {
     //PARA TRAER TODOS LOS GAMES SIN EL QUERY
     let dataGames = []; //Un array para concatenar los games
@@ -146,7 +150,7 @@ router.post("/videogame", async (req, res) => {
     await videogame.addGenres(genres);
     res.json(videogame);
   } catch (e) {
-    console.log("Error del post", e);
+    res.status(404).send("Error del post", e);
   }
 });
 

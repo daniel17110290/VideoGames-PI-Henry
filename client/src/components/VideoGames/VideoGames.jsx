@@ -8,16 +8,17 @@ import Message from "../Message/Message";
 import "./styles/VideoGames.css";
 export default function VideoGames() {
   let videoGames = useSelector((state) => state.videoGames);
-  const dispatch = useDispatch();
   let loading = useSelector((state) => state.loading);
   let error = useSelector((state) => state.error);
   let currentPage = useSelector((state) => state.currentPage);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getVideogames(loading));
+    dispatch(getVideogames());
   }, []);
 
   function paginaSig() {
-    if (currentPage <= videoGames.length) {
+    if (currentPage < videoGames.length) {
       dispatch(nextPage());
     }
   }
@@ -55,7 +56,7 @@ export default function VideoGames() {
                 genres={videogame.genres}
                 urlImg={videogame.urlImg}
                 id={videogame.id}
-                className="container-game"
+                rating={videogame.rating}
               />
             );
           })}

@@ -6,5 +6,5 @@ export const FILTRAR_GENEROS = "FILTRAR_GENEROS"; //listo
 export const FILTRAR_ORIGEN = "FILTRAR_ORIGEN"; //listo
 export const BUSCAR_GAME = "BUSCAR_GAME"; //listo
 export const LOADING = "LOADING"; //listo
-export const NEXT_PAGE = "NEXT_PAGE";
-export const PREV_PAGE = "PREV_PAGE";
+export const NEXT_PAGE = "NEXT_PAGE"; //listo
+export const PREV_PAGE = "PREV_PAGE"; //listo
